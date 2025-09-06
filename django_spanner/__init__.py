@@ -42,6 +42,10 @@ USING_DJANGO_4 = False
 if django.VERSION[:2] == (4, 2):
     USING_DJANGO_4 = True
 
+USING_DJANGO_5 = False
+if django.VERSION[:2] == (5, 2):
+    USING_DJANGO_5 = True
+
 from django.db.models.fields import (
     SmallAutoField,
     BigAutoField,
@@ -50,8 +54,8 @@ from django.db.models import JSONField
 
 USE_EMULATOR = os.getenv("SPANNER_EMULATOR_HOST") is not None
 
-# Only active LTS django versions (3.2.*, 4.2.*) are supported by this library right now.
-SUPPORTED_DJANGO_VERSIONS = [(3, 2), (4, 2)]
+# Only active LTS django versions (3.2.*, 4.2.*, 5.2.*) are supported by this library right now.
+SUPPORTED_DJANGO_VERSIONS = [(3, 2), (4, 2), (5, 2)]
 
 check_django_compatability(SUPPORTED_DJANGO_VERSIONS)
 register_functions()

@@ -8,7 +8,7 @@ from django.core.exceptions import EmptyResultSet
 from django.db.utils import DatabaseError
 from django_spanner.compiler import SQLCompiler
 from django.db.models.query import QuerySet
-from django_spanner import USING_DJANGO_3
+from django_spanner import USING_DJANGO_3, USING_DJANGO_5
 from tests.unit.django_spanner.simple_test import SpannerSimpleTestClass
 from .models import Number
 
@@ -48,6 +48,15 @@ class TestCompiler(SpannerSimpleTestClass):
                     + "FROM tests_number WHERE tests_number.num >= %s"
                 ],
             )
+        elif USING_DJANGO_5:
+            self.assertEqual(
+                sql_compiled,
+                [
+                    "SELECT tests_number.num AS num FROM tests_number WHERE "
+                    + "tests_number.num <= %s UNION ALL SELECT tests_number.num "
+                    + "AS num FROM tests_number WHERE tests_number.num >= %s"
+                ],
+            )
         else:
             self.assertEqual(
                 sql_compiled,
@@ -77,6 +86,16 @@ class TestCompiler(SpannerSimpleTestClass):
                     "SELECT tests_number.num FROM tests_number WHERE "
                     + "tests_number.num <= %s UNION DISTINCT SELECT "
                     + "tests_number.num FROM tests_number WHERE "
+                    + "tests_number.num >= %s"
+                ],
+            )
+        elif USING_DJANGO_5:
+            self.assertEqual(
+                sql_compiled,
+                [
+                    "SELECT tests_number.num AS num FROM tests_number WHERE "
+                    + "tests_number.num <= %s UNION DISTINCT SELECT "
+                    + "tests_number.num AS num FROM tests_number WHERE "
                     + "tests_number.num >= %s"
                 ],
             )
@@ -112,6 +131,15 @@ class TestCompiler(SpannerSimpleTestClass):
                     + "FROM tests_number WHERE tests_number.num >= %s"
                 ],
             )
+        elif USING_DJANGO_5:
+            self.assertEqual(
+                sql_compiled,
+                [
+                    "SELECT tests_number.num AS num FROM tests_number WHERE "
+                    + "tests_number.num <= %s EXCEPT ALL SELECT tests_number.num "
+                    + "AS num FROM tests_number WHERE tests_number.num >= %s"
+                ],
+            )
         else:
             self.assertEqual(
                 sql_compiled,
@@ -141,6 +169,16 @@ class TestCompiler(SpannerSimpleTestClass):
                     "SELECT tests_number.num FROM tests_number WHERE "
                     + "tests_number.num <= %s EXCEPT DISTINCT SELECT "
                     + "tests_number.num FROM tests_number WHERE "
+                    + "tests_number.num >= %s"
+                ],
+            )
+        elif USING_DJANGO_5:
+            self.assertEqual(
+                sql_compiled,
+                [
+                    "SELECT tests_number.num AS num FROM tests_number WHERE "
+                    + "tests_number.num <= %s EXCEPT DISTINCT SELECT "
+                    + "tests_number.num AS num FROM tests_number WHERE "
                     + "tests_number.num >= %s"
                 ],
             )
@@ -176,6 +214,18 @@ class TestCompiler(SpannerSimpleTestClass):
                     + "SELECT tests_number.num FROM tests_number WHERE "
                     + "tests_number.num >= %s EXCEPT DISTINCT "
                     + "SELECT tests_number.num FROM tests_number "
+                    + "WHERE tests_number.num = %s)"
+                ],
+            )
+        elif USING_DJANGO_5:
+            self.assertEqual(
+                sql_compiled,
+                [
+                    "SELECT tests_number.num AS num FROM tests_number WHERE "
+                    + "tests_number.num <= %s UNION DISTINCT SELECT * FROM ("
+                    + "SELECT tests_number.num AS num FROM tests_number WHERE "
+                    + "tests_number.num >= %s EXCEPT DISTINCT "
+                    + "SELECT tests_number.num AS num FROM tests_number "
                     + "WHERE tests_number.num = %s)"
                 ],
             )
@@ -216,6 +266,18 @@ class TestCompiler(SpannerSimpleTestClass):
                     + "SELECT tests_number.num FROM tests_number WHERE "
                     + "tests_number.num >= %s EXCEPT DISTINCT "
                     + "SELECT tests_number.num FROM tests_number "
+                    + "WHERE tests_number.num = %s)"
+                ],
+            )
+        elif USING_DJANGO_5:
+            self.assertEqual(
+                sql_compiled,
+                [
+                    "SELECT tests_number.num AS num FROM tests_number WHERE "
+                    + "tests_number.num <= %s UNION DISTINCT SELECT * FROM ("
+                    + "SELECT tests_number.num AS num FROM tests_number WHERE "
+                    + "tests_number.num >= %s EXCEPT DISTINCT "
+                    + "SELECT tests_number.num AS num FROM tests_number "
                     + "WHERE tests_number.num = %s)"
                 ],
             )
