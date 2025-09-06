@@ -105,8 +105,12 @@ def unit(session):
     """Run the unit test suite."""
     print("Unit tests with django 3.2")
     default(session)
+
     print("Unit tests with django 4.2")
     default(session, django_version="4.2")
+
+    print("Unit tests with django 5.2")
+    default(session, django_version="5.2")
 
 
 @nox.session(python=MOCKSERVER_TEST_PYTHON_VERSION)
@@ -288,7 +292,6 @@ def docfx(session):
     )
 
 
-
 @nox.session(python="3.11")
 def docfx(session):
     """Build the docfx yaml files for this library."""
@@ -336,7 +339,6 @@ def docfx(session):
     )
 
 
-
 @nox.session(python="3.12")
 def docfx(session):
     """Build the docfx yaml files for this library."""
@@ -382,7 +384,6 @@ def docfx(session):
         os.path.join("docs", ""),
         os.path.join("docs", "_build", "html", ""),
     )
-
 
 
 @nox.session(python="3.13")
