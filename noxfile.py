@@ -26,8 +26,8 @@ BLACK_PATHS = [
 
 MOCKSERVER_TEST_PYTHON_VERSION = "3.12"
 DEFAULT_PYTHON_VERSION = "3.8"
-SYSTEM_TEST_PYTHON_VERSIONS = ["3.8"]
-UNIT_TEST_PYTHON_VERSIONS = ["3.8", "3.9", "3.10"]
+SYSTEM_TEST_PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+UNIT_TEST_PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
 
 CURRENT_DIRECTORY = pathlib.Path(__file__).parent.absolute()
 
@@ -107,6 +107,8 @@ def unit(session):
     default(session)
     print("Unit tests with django 4.2")
     default(session, django_version="4.2")
+    print("Unit tests with django 5.2")
+    default(session, django_version="5.2")
 
 
 @nox.session(python=MOCKSERVER_TEST_PYTHON_VERSION)
@@ -189,6 +191,8 @@ def system(session):
     system_test(session)
     print("System tests with django 4.2")
     system_test(session, django_version="4.2")
+    print("System tests with django 5.2")
+    system_test(session, django_version="5.2")
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION)

@@ -65,15 +65,17 @@ Supported versions
 ~~~~~~~~~~~~~~~~~~
 
 The library supports `Django 3.2
-<https://docs.djangoproject.com/en/3.2/>`_, and `Django 4.2
-<https://docs.djangoproject.com/en/4.2/>`_.
-Both versions are long-term support (LTS) releases for the
+<https://docs.djangoproject.com/en/3.2/>`_, `Django 4.2
+<https://docs.djangoproject.com/en/4.2/>`_, and `Django 5.2
+<https://docs.djangoproject.com/en/5.2/>`_.
+All of these releases are long-term support (LTS) releases for the
 `Django project<https://www.djangoproject.com/download/#supported-versions>_`.
-The minimum required Python version is 3.6.
+The minimum required Python version is 3.8 and the package is tested up to
+Python 3.13.
 
 .. code:: shell
 
-    pip3 install django==3.2
+    pip3 install django==5.2
 
 
 Installing the package
