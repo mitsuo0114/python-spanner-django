@@ -106,11 +106,13 @@ def unit(session):
     print("Unit tests with django 3.2")
     default(session)
 
-    print("Unit tests with django 4.2")
-    default(session, django_version="4.2")
+    if session.python not in ["3.13"]:
+        print("Unit tests with django 4.2")
+        default(session, django_version="4.2")
 
-    print("Unit tests with django 5.2")
-    default(session, django_version="5.2")
+    if session.python not in ["3.8", "3.9"]:
+        print("Unit tests with django 5.2")
+        default(session, django_version="5.2")
 
 
 @nox.session(python=MOCKSERVER_TEST_PYTHON_VERSION)
