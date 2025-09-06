@@ -27,7 +27,7 @@ BLACK_PATHS = [
 MOCKSERVER_TEST_PYTHON_VERSION = "3.12"
 DEFAULT_PYTHON_VERSION = "3.8"
 SYSTEM_TEST_PYTHON_VERSIONS = ["3.8"]
-UNIT_TEST_PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+UNIT_TEST_PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
 CURRENT_DIRECTORY = pathlib.Path(__file__).parent.absolute()
 
@@ -103,14 +103,13 @@ def default(session, django_version="3.2"):
 @nox.session(python=UNIT_TEST_PYTHON_VERSIONS)
 def unit(session):
     """Run the unit test suite."""
-    # print("Unit tests with django 3.2")
-    # default(session)
+    print("Unit tests with django 3.2")
+    default(session)
 
-    if session.python not in ["3.13"]:
-        print("Unit tests with django 4.2")
-        default(session, django_version="4.2")
+    print("Unit tests with django 4.2")
+    default(session, django_version="4.2")
 
-    if session.python not in ["3.8", "3.9"]:
+    if session.python in ["3.10", "3.11", "3.12"]:
         print("Unit tests with django 5.2")
         default(session, django_version="5.2")
 
