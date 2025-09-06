@@ -6,7 +6,7 @@
 
 from tests.unit.django_spanner.simple_test import SpannerSimpleTestClass
 from django_spanner.compiler import SQLCompiler
-from django_spanner import USING_DJANGO_3
+from django_spanner import USING_DJANGO_3, USING_DJANGO_5
 from django.db.models import CharField, FloatField, Value
 from django.db.models.functions import (
     Cast,
@@ -35,11 +35,17 @@ class TestUtils(SpannerSimpleTestClass):
         )
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.name, SUBSTR(CAST(tests_author.name AS "
-            + "STRING), 0, 10) AS name_as_prefix FROM tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.name AS name, SUBSTR(CAST(tests_author.name AS "
+                + "STRING), 0, 10) AS name_as_prefix FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.name, SUBSTR(CAST(tests_author.name AS "
+                + "STRING), 0, 10) AS name_as_prefix FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, ())
 
     def test_cast_without_max_length(self):
@@ -51,11 +57,17 @@ class TestUtils(SpannerSimpleTestClass):
         )
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.num, CAST(tests_author.num AS FLOAT64) "
-            + "AS num_as_float FROM tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.num AS num, CAST(tests_author.num AS FLOAT64) "
+                + "AS num_as_float FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.num, CAST(tests_author.num AS FLOAT64) "
+                + "AS num_as_float FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, ())
 
     def test_concatpair(self):
@@ -69,12 +81,19 @@ class TestUtils(SpannerSimpleTestClass):
         )
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.name, CONCAT(IFNULL(tests_author.name, %s), "
-            + "IFNULL(CONCAT(IFNULL(%s, %s), IFNULL(tests_author.last_name, "
-            + "%s)), %s)) AS full_name FROM tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.name AS name, CONCAT(IFNULL(tests_author.name, %s), "
+                + "IFNULL(CONCAT(IFNULL(%s, %s), IFNULL(tests_author.last_name, "
+                + "%s)), %s)) AS full_name FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.name, CONCAT(IFNULL(tests_author.name, %s), "
+                + "IFNULL(CONCAT(IFNULL(%s, %s), IFNULL(tests_author.last_name, "
+                + "%s)), %s)) AS full_name FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, ("", " ", "", "", ""))
 
     def test_cot(self):
@@ -86,11 +105,17 @@ class TestUtils(SpannerSimpleTestClass):
         )
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.num, (1 / TAN(tests_author.num)) AS num_cot "
-            + "FROM tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.num AS num, (1 / TAN(tests_author.num)) AS num_cot "
+                + "FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.num, (1 / TAN(tests_author.num)) AS num_cot "
+                + "FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, ())
 
     def test_degrees(self):
@@ -102,11 +127,17 @@ class TestUtils(SpannerSimpleTestClass):
         )
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.num, ((tests_author.num) * 180 / "
-            + "3.141592653589793) AS num_degrees FROM tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.num AS num, ((tests_author.num) * 180 / "
+                + "3.141592653589793) AS num_degrees FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.num, ((tests_author.num) * 180 / "
+                + "3.141592653589793) AS num_degrees FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, ())
 
     def test_left(self):
@@ -118,11 +149,17 @@ class TestUtils(SpannerSimpleTestClass):
         )
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.num, SUBSTR(tests_author.name, %s, %s) AS "
-            + "first_initial FROM tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.num AS num, SUBSTR(tests_author.name, %s, %s) AS "
+                + "first_initial FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.num, SUBSTR(tests_author.name, %s, %s) AS "
+                + "first_initial FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, (1, 1))
 
     def test_right(self):
@@ -134,12 +171,21 @@ class TestUtils(SpannerSimpleTestClass):
         )
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.num, SUBSTR(tests_author.name, (%s * %s)) "
-            + "AS last_letter FROM tests_author",
-        )
-        self.assertEqual(params, (1, -1))
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.num AS num, SUBSTR(tests_author.name, (%s * %s), %s) "
+                + "AS last_letter FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.num, SUBSTR(tests_author.name, (%s * %s)) "
+                + "AS last_letter FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
+        if USING_DJANGO_5:
+            self.assertEqual(params, (1, -1, 1))
+        else:
+            self.assertEqual(params, (1, -1))
 
     def test_log(self):
         """
@@ -149,11 +195,17 @@ class TestUtils(SpannerSimpleTestClass):
 
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.num, LOG(%s, tests_author.num) AS log FROM "
-            + "tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.num AS num, LOG(%s, tests_author.num) AS log FROM "
+                + "tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.num, LOG(%s, tests_author.num) AS log FROM "
+                + "tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, (10,))
 
     def test_ord(self):
@@ -166,11 +218,17 @@ class TestUtils(SpannerSimpleTestClass):
 
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.name, TO_CODE_POINTS(tests_author.name)"
-            + "[OFFSET(0)] AS name_code_point FROM tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.name AS name, TO_CODE_POINTS(tests_author.name)"
+                + "[OFFSET(0)] AS name_code_point FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.name, TO_CODE_POINTS(tests_author.name)"
+                + "[OFFSET(0)] AS name_code_point FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, ())
 
     def test_pi(self):
@@ -185,6 +243,11 @@ class TestUtils(SpannerSimpleTestClass):
             expected_sql = (
                 "SELECT tests_author.num FROM tests_author WHERE tests_author.num "
                 + "= 3.141592653589793"
+            )
+        elif USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.num AS num FROM tests_author WHERE tests_author.num "
+                + "= (3.141592653589793)"
             )
         else:
             expected_sql = (
@@ -205,11 +268,17 @@ class TestUtils(SpannerSimpleTestClass):
 
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.num, ((tests_author.num) * 3.141592653589793 "
-            "/ 180) AS num_radians FROM tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.num AS num, ((tests_author.num) * 3.141592653589793 "
+                "/ 180) AS num_radians FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.num, ((tests_author.num) * 3.141592653589793 "
+                "/ 180) AS num_radians FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, ())
 
     def test_strindex(self):
@@ -222,11 +291,17 @@ class TestUtils(SpannerSimpleTestClass):
 
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.name, STRPOS(tests_author.name, %s) AS "
-            + "smith_index FROM tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.name AS name, STRPOS(tests_author.name, %s) AS "
+                + "smith_index FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.name, STRPOS(tests_author.name, %s) AS "
+                + "smith_index FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, ("Smith",))
 
     def test_substr(self):
@@ -239,9 +314,15 @@ class TestUtils(SpannerSimpleTestClass):
 
         compiler = SQLCompiler(q1.query, self.connection, "default")
         sql_query, params = compiler.query.as_sql(compiler, self.connection)
-        self.assertEqual(
-            sql_query,
-            "SELECT tests_author.name, SUBSTR(tests_author.name, %s, %s) AS "
-            + "name_prefix FROM tests_author",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_author.name AS name, SUBSTR(tests_author.name, %s, %s) AS "
+                + "name_prefix FROM tests_author"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_author.name, SUBSTR(tests_author.name, %s, %s) AS "
+                + "name_prefix FROM tests_author"
+            )
+        self.assertEqual(sql_query, expected_sql)
         self.assertEqual(params, (1, 5))

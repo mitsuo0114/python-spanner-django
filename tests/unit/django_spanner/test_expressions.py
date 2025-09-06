@@ -8,6 +8,7 @@ from django_spanner.compiler import SQLCompiler
 from django.db.models import F
 from tests.unit.django_spanner.simple_test import SpannerSimpleTestClass
 from .models import Report
+from django_spanner import USING_DJANGO_5
 
 
 class TestExpressions(SpannerSimpleTestClass):
@@ -17,11 +18,17 @@ class TestExpressions(SpannerSimpleTestClass):
         )
         compiler = SQLCompiler(qs1.query, self.connection, "default")
         sql_compiled, _ = compiler.as_sql()
-        self.assertEqual(
-            sql_compiled,
-            "SELECT tests_report.name FROM tests_report ORDER BY "
-            + "tests_report.name IS NULL, tests_report.name DESC",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_report.name AS name FROM tests_report ORDER BY "
+                + "tests_report.name IS NULL, tests_report.name DESC"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_report.name FROM tests_report ORDER BY "
+                + "tests_report.name IS NULL, tests_report.name DESC"
+            )
+        self.assertEqual(sql_compiled, expected_sql)
 
     def test_order_by_sql_query_with_order_by_null_first(self):
         qs1 = Report.objects.values("name").order_by(
@@ -29,18 +36,30 @@ class TestExpressions(SpannerSimpleTestClass):
         )
         compiler = SQLCompiler(qs1.query, self.connection, "default")
         sql_compiled, _ = compiler.as_sql()
-        self.assertEqual(
-            sql_compiled,
-            "SELECT tests_report.name FROM tests_report ORDER BY "
-            + "tests_report.name IS NOT NULL, tests_report.name DESC",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_report.name AS name FROM tests_report ORDER BY "
+                + "tests_report.name IS NOT NULL, tests_report.name DESC"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_report.name FROM tests_report ORDER BY "
+                + "tests_report.name IS NOT NULL, tests_report.name DESC"
+            )
+        self.assertEqual(sql_compiled, expected_sql)
 
     def test_order_by_sql_query_with_order_by_name(self):
         qs1 = Report.objects.values("name")
         compiler = SQLCompiler(qs1.query, self.connection, "default")
         sql_compiled, _ = compiler.as_sql()
-        self.assertEqual(
-            sql_compiled,
-            "SELECT tests_report.name FROM tests_report ORDER BY "
-            + "tests_report.name ASC",
-        )
+        if USING_DJANGO_5:
+            expected_sql = (
+                "SELECT tests_report.name AS name FROM tests_report ORDER BY "
+                + "1 ASC"
+            )
+        else:
+            expected_sql = (
+                "SELECT tests_report.name FROM tests_report ORDER BY "
+                + "tests_report.name ASC"
+            )
+        self.assertEqual(sql_compiled, expected_sql)
