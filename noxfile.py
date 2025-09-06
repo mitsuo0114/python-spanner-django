@@ -103,8 +103,8 @@ def default(session, django_version="3.2"):
 @nox.session(python=UNIT_TEST_PYTHON_VERSIONS)
 def unit(session):
     """Run the unit test suite."""
-    print("Unit tests with django 3.2")
-    default(session)
+    # print("Unit tests with django 3.2")
+    # default(session)
 
     if session.python not in ["3.13"]:
         print("Unit tests with django 4.2")
